@@ -78,8 +78,7 @@ function TrainScheduler(firebaseObj) {
                                 $(`<th>`).attr(`scope`, `col`).text(`Frequency (min)`),
                                 $(`<th>`).attr(`scope`, `col`).text(`Next Arrival`),
                                 $(`<th>`).attr(`scope`, `col`).text(`Minutes Away`),
-                                $(`<th>`).attr(`scope`, `col`).text(``),
-                                $(`<th>`).attr(`scope`, `col`).text(``),
+                                $(`<th>`).attr(`scope`, `col`).text(``)
                         )
                     )
             );

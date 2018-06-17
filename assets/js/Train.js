@@ -40,7 +40,7 @@ function Train(propertiesObject) {
 
     // setFirstTrainTime(newFirstTrainTime) - Perform argument validation, set the first train's arrival time to today and newFirstTrainTime or 00:00:00 UTC
     function _setFirstTrainTime (newFirstTrainTime) {
-        if (newFirstTrainTime instanceof moment) {
+        if (newFirstTrainTime instanceof moment && newFirstTrainTime.isValid()) {
             _firstTrainTime = moment(`${moment().format(`MM/DD/YYYY`)} ${newFirstTrainTime.format(`hh:mm`)}`, `MM/DD/YYYY hh:mm`);
             return 0;
         }

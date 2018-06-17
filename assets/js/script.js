@@ -18,20 +18,29 @@ $(() => {
     $(`body`).prepend(scheduler.renderScheduler());
     scheduler.renderTrains();
 
-    $(document).on(`click`, `#submitButton`, function(event) {
+    $(document).on(`click`, `#submitButton`, function (event) {
         // Prevent form submission
         event.preventDefault();
 
-        let trainProperties = {
-            name: $(`#trainName`).val().trim(),
-            destination: $(`#destination`).val().trim(),
-            firstTrainTime: moment($(`#firstTrainTime`).val().trim(), `hh:mm`),
-            frequency: Number.parseInt($(`#frequency`).val().trim())
-        };
-        let newTrain = new Train(trainProperties);
-        $(`#newTrainForm`).trigger(`reset`);
-        scheduler.addTrain(newTrain);
-        scheduler.renderTrains();
+        if ($(`#trainName`).val().trim() === "" || $(`#destination`).val().trim() === "" ||
+            $(`#firstTrainTime`).val().trim() === "" || $(`#frequency`).val().trim() === "") {
+                $(`#warning`).remove();
+                $(`#submitButton`).after($(`<div>`).attr({class: `text-danger pt-3`, id: `warning`}).text(`Please make sure all of the above fields are filled out`));
+                $(`#submitButton`).effect(`shake`);
+        }
+        else {
+            $(`#warning`).remove();
+            let trainProperties = {
+                name: $(`#trainName`).val().trim(),
+                destination: $(`#destination`).val().trim(),
+                firstTrainTime: moment($(`#firstTrainTime`).val().trim(), `hh:mm`),
+                frequency: Number.parseInt($(`#frequency`).val().trim())
+            };
+            let newTrain = new Train(trainProperties);
+            $(`#newTrainForm`).trigger(`reset`);
+            scheduler.addTrain(newTrain);
+            scheduler.renderTrains();
+        }
     });
 
     $(document).on(`click`, `#deleteTrain`, function (event) {
