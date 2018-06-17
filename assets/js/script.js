@@ -18,4 +18,20 @@ $(() => {
     $(`body`).prepend(scheduler.renderScheduler());
     scheduler.renderTrains();
 
+    $(document).on(`click`, `#submitButton`, function(event) {
+        // Prevent form submission
+        event.preventDefault();
+
+        let trainProperties = {
+            name: $(`#trainName`).val().trim(),
+            destination: $(`#destination`).val().trim(),
+            firstTrainTime: moment($(`#firstTrainTime`).val().trim(), `hh:mm`),
+            frequency: Number.parseInt($(`#frequency`).val().trim())
+        };
+        let newTrain = new Train(trainProperties);
+        $(`#newTrainForm`).trigger(`reset`);
+        scheduler.addTrain(newTrain);
+        scheduler.renderTrains();
+    });
+
 });

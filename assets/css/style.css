@@ -1,7 +1,11 @@
 i.fa-edit:hover {
     color: blue;
-  }
+}
   
-  i.fa-window-close:hover {
+i.fa-window-close:hover {
     color: red;
-  }
+}
+
+.card {
+    margin-bottom: 32px !important;
+}

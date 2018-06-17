@@ -28,7 +28,7 @@ function Train(propertiesObject) {
 
     // setDestination(newDestination) - Perform argument validation, set the name of current Train object's destination to newDestination or ""
     function _setDestination (newDestination) {
-        if (typeof destination === `string`) {
+        if (typeof newDestination === `string`) {
             _destination = newDestination;
             return 0;
         }
