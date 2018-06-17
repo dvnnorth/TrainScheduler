@@ -5,32 +5,28 @@ function TrainScheduler(firebaseObj) {
     let _database = _firebase.database();
 
     // Private methods
-    function _renderTrains() {
+    function _renderTrains(snapshot) {
         let $trainBody = $(`#trainBody`);
 
         $trainBody.empty();
 
-        _database.ref().once("value").
-            then(function (snapshot) {
+        $.each(snapshot.val(), function (key, trainObj) {
 
-                $.each(snapshot.val(), function (key, trainObj) {
+            let $newRow = $(`<tr>`).attr(`id`, `train` + key);
+            let thisTrain = new Train(trainObj);
 
-                    let $newRow = $(`<tr>`).attr(`id`, `train` + key);
-                    let thisTrain = new Train(trainObj);
+            $newRow.
+                append($(`<td>`).text(trainObj.name)).
+                append($(`<td>`).text(trainObj.destination)).
+                append($(`<td>`).text(trainObj.frequency)).
+                append($(`<td>`).attr(`class`, `nextArrival`).text(thisTrain.nextArrival().format(`hh:mm A`))).
+                append($(`<td>`).attr(`class`, `minutesAway`).text(Math.ceil(((Number.parseInt(thisTrain.nextArrival().format(`X`)) - Number.parseInt(moment().format(`X`))) / 60)).toString())).
+                append($(`<td>`).attr({ id: `deleteTrain`, [`data-todelete`]: key }).html(`<i class="far fa-window-close"></i>`));
 
-                    $newRow.
-                        append($(`<td>`).text(trainObj.name)).
-                        append($(`<td>`).text(trainObj.destination)).
-                        append($(`<td>`).text(trainObj.frequency)).
-                        append($(`<td>`).attr(`class`, `nextArrival`).text(thisTrain.nextArrival().format(`hh:mm A`))).
-                        append($(`<td>`).attr(`class`, `minutesAway`).text(Math.ceil(((Number.parseInt(thisTrain.nextArrival().format(`X`)) - Number.parseInt(moment().format(`X`))) / 60)).toString())).
-                        append($(`<td>`).attr({id: `deleteTrain`, [`data-todelete`]: key}).html(`<i class="far fa-window-close"></i>`));
+            $trainBody.append($newRow);
 
-                    $trainBody.append($newRow);
+        });
 
-                });
-
-            });
     }
 
     function _renderBaseHTML() {
@@ -79,7 +75,7 @@ function TrainScheduler(firebaseObj) {
                                 $(`<th>`).attr(`scope`, `col`).text(`Next Arrival`),
                                 $(`<th>`).attr(`scope`, `col`).text(`Minutes Away`),
                                 $(`<th>`).attr(`scope`, `col`).text(``)
-                        )
+                            )
                     )
             );
 
@@ -186,6 +182,10 @@ function TrainScheduler(firebaseObj) {
             });
     }
 
+    _database.ref().on(`value`, function (snapshot) {
+        renderTrains(snapshot);
+    });
+
     // Return encapsulated object
     return {
         // Getter Methods
@@ -197,7 +197,10 @@ function TrainScheduler(firebaseObj) {
         },
 
         renderTrains: () => {
-            _renderTrains();
+            _database.ref().once(`value`).
+                then(function (snapshot) {
+                    _renderTrains(snapshot);
+                });
         },
 
         updateTimes: () => {
