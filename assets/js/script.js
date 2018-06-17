@@ -34,4 +34,8 @@ $(() => {
         scheduler.renderTrains();
     });
 
+    setInterval(function () {
+        scheduler.updateTimes();
+    }, 60000);
+    
 });

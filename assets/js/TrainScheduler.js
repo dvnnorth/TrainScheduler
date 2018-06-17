@@ -22,8 +22,8 @@ function TrainScheduler(firebaseObj) {
                         append($(`<td>`).text(trainObj.name)).
                         append($(`<td>`).text(trainObj.destination)).
                         append($(`<td>`).text(trainObj.frequency)).
-                        append($(`<td>`).text(thisTrain.nextArrival().format(`hh:mm A`))).
-                        append($(`<td>`).text(Math.ceil(((Number.parseInt(thisTrain.nextArrival().format(`X`)) - Number.parseInt(moment().format(`X`))) / 60)).toString()));
+                        append($(`<td>`).attr(`class`, `nextArrival`).text(thisTrain.nextArrival().format(`hh:mm A`))).
+                        append($(`<td>`).attr(`class`, `minutesAway`).text(Math.ceil(((Number.parseInt(thisTrain.nextArrival().format(`X`)) - Number.parseInt(moment().format(`X`))) / 60)).toString()));
 
                     $trainBody.append($newRow);
 
@@ -171,6 +171,21 @@ function TrainScheduler(firebaseObj) {
 
     }
 
+    function _updateTimes() {
+        _database.ref().once(`value`)
+            .then(function (snapshot) {
+                $.each(snapshot.val(), function (key, trainObj) {
+
+                    let $row = $(`#train` + key);
+                    let thisTrain = new Train(trainObj);
+
+                    $row.children(`.nextArrival`).text(thisTrain.nextArrival().format(`hh:mm A`));
+                    $row.children(`.minutesAway`).text(Math.ceil(((Number.parseInt(thisTrain.nextArrival().format(`X`)) - Number.parseInt(moment().format(`X`))) / 60)).toString());
+
+                });
+            });
+    }
+
     // Return encapsulated object
     return {
         // Getter Methods
@@ -183,6 +198,10 @@ function TrainScheduler(firebaseObj) {
 
         renderTrains: () => {
             _renderTrains();
+        },
+
+        updateTimes: () => {
+            _updateTimes();
         }
 
     };
