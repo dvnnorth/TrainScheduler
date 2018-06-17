@@ -13,6 +13,10 @@ i.fa-window-close:hover {
     color: red;
 }
 
+i.fa-edit, i.fa-window-close {
+    cursor: pointer;
+}
+
 .card {
     margin-bottom: 32px !important;
 }
