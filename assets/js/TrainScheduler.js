@@ -1,14 +1,38 @@
 function TrainScheduler(firebaseObj) {
 
-    // Private variables
-    _HTML = _initializeHTML();
-    _firebase = firebaseObj;
-    _database = _firebase.database();
+    // Private properties
+    let _firebase = firebaseObj;
+    let _database = _firebase.database();
 
     // Private methods
-    function _initializeHTML() {
+    function _renderTrains() {
+        let $trainBody = $(`#trainBody`);
 
-        // Declare page content
+        _database.ref().once("value").
+            then(function (snapshot) {
+
+                $.each(snapshot.val(), function (key, trainObj) {
+                    
+                    let $newRow = $(`<tr>`).attr(`id`, `train${key}`);
+                    let thisTrain = new Train(trainObj);
+
+                    $newRow.
+                        append($(`<td>`).text(trainObj.name)).
+                        append($(`<td>`).text(trainObj.destination)).
+                        append($(`<td>`).text(trainObj.frequency)).
+                        append($(`<td>`).text( thisTrain.nextArrival().format(`hh:mm A`) )).
+                        append($(`<td>`).text( Math.ceil(((Number.parseInt(thisTrain.nextArrival().format(`X`)) - Number.parseInt(moment().format(`X`))) / 60)).toString() ));
+
+                    $trainBody.append($newRow);
+
+                });
+
+            });
+    }
+
+    function _renderBaseHTML() {
+
+        // Initialize grid
         let $mainContainer = $(`<div>`).
             attr(`class`, `container`).
             attr(`id`, `mainContainer`);
@@ -19,55 +43,89 @@ function TrainScheduler(firebaseObj) {
             append(
                 ($(`<h2>`).
                     attr(`class`, `text-center display-2`).
-                    text(`Train Scheduler`)));
-        
-        let $rowTable = $(`<div>`).
-            attr(`class`, `row`).
-            attr(`id`, `rowTable`);
+                    text(`Train Scheduler`))
+            );
 
-        let $colTable = $(`<div>`).
-            attr(`class`, `col`).
-            attr(`id`, `colTable`);
-        
-        let $rowAddTrain = $(`<div>`).
-            attr(`class`, `row`).
-            attr(`id`, `rowAddTrain`);
+        let $tableCard = $(`<div>`).
+            attr(`class`, `card`).
+            attr(`id`, `tableCard`).
+            append(
+                $(`<h5>`).
+                    attr(`class`, `card-header`).
+                    text(`Current Train Schedule`)
+            );
 
-        let $colAddTrain = $(`<div>`).
-            attr(`class`, `col`).
-            attr(`id`, `colAddTrain`);
+        let $formCard = $(`<div>`).
+            attr(`class`, `card`).
+            attr(`id`, `formCard`).
+            append(
+                $(`<h5>`).
+                    attr(`class`, `card-header`).
+                    text(`Add Train`)
+            );
+
+        // Create table
+        let $trainTableCard = $(`<div>`).
+            attr(`class`, `card-body`).
+            attr(`id`, `trainTableCard`);
+
+        let $trainTableWrapper = $(`<div>`).
+            attr(`class`, `table-responsive`);
+
+        let $trainTable = $(`<table>`).
+            attr(`class`, `table table-striped table-hover table-sm`).
+            append(
+                $(`<thead>`).
+                    append(
+                        $(`<tr>`).
+                            append(
+                                $(`<th>`).attr(`scope`, `col`).text(`Train Name`),
+                                $(`<th>`).attr(`scope`, `col`).text(`Destination`),
+                                $(`<th>`).attr(`scope`, `col`).text(`Frequency (min)`),
+                                $(`<th>`).attr(`scope`, `col`).text(`Next Arrival`),
+                                $(`<th>`).attr(`scope`, `col`).text(`Minutes Away`),
+                                $(`<th>`).attr(`scope`, `col`).text(``),
+                                $(`<th>`).attr(`scope`, `col`).text(``),
+                        )
+                    )
+            );
+
+        // Add the trains
+        $trainTable.append(
+            $(`<tbody>`).attr(`id`, `trainBody`)
+        );
+
+        // Create form
 
         // Append everything together
-        $rowTable.append($colTable);
-        $rowAddTrain.append($colAddTrain);
+        $trainTableWrapper.append($trainTable);
+        $trainTableCard.append($trainTableWrapper);
+        $tableCard.append($trainTableCard);
 
-        $mainContainer.append($jumbotron).
-            append($rowTable).
-            append($rowAddTrain);
+        $mainContainer.
+            append(
+                $jumbotron,
+                $tableCard
+            );
 
         return $mainContainer;
 
     }
 
-    function _render () {
-        
-    }
-
-    function _thump() {
-        _HTML;
-    }
-
     // Return encapsulated object
     return {
-        getHTML: this.getHTML
+        // Getter Methods
+        renderScheduler: () => { return _renderBaseHTML() },
+
+        // Setter Methods
+        addTrain: (trainObject) => {
+            _database.ref().push(trainObject);
+        },
+
+        renderTrains: () => {
+            _renderTrains();
+        }
+
     };
 
-}
-
-// Public methods
-TrainScheduler.prototype.getHTML = () => {return _HTML};
-
-TrainScheduler.prototype.addTrain = trainObject => {
-    console.log(trainObject);
-    return _HTML;
 }

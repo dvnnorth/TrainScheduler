@@ -15,26 +15,7 @@ $(() => {
     // Create our TrainScheduler object with the Firebase Database information
     let scheduler = new TrainScheduler(firebase);
 
-    let train = new Train("Trainy", "Downtown", moment(`03:00 AM`, `hh:mm A`), 35);
-
-    console.log(train.getProperties());
-
-    console.log(train.setName("Traino"));
-
-    console.log(train.getProperties());
-
-    console.log(train.setDestination("Chicago"));
-
-    console.log(train.getProperties());
-
-    console.log(train.setFirstTrainTime(moment(`04:40 AM`, `hh:mm A`)));
-
-    console.log(train.getProperties());
-
-    console.log(train.setFrequency(50));
-
-    console.log(train.nextArrival().format(`MM/DD/YYYY hh:mm A`));
-
-    $(`body`).prepend(scheduler.getHTML);
+    $(`body`).prepend(scheduler.renderScheduler());
+    scheduler.renderTrains();
 
 });
