@@ -34,8 +34,14 @@ $(() => {
         scheduler.renderTrains();
     });
 
+    $(document).on(`click`, `#deleteTrain`, function (event) {
+        let key = $(this).data(`todelete`);
+        firebase.database().ref(key).set(null);
+        scheduler.renderTrains();
+    });
+
     setInterval(function () {
         scheduler.updateTimes();
     }, 60000);
-    
+
 });

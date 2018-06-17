@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Crimson+Text:400,700|Work+Sans:400,700');
+
+body {
+    font-family: 'Work Sans', Arial, Helvetica, sans-serif !important;
+    background: url('../img/funky-lines.png') !important;
+}
+
 i.fa-edit:hover {
     color: blue;
 }
@@ -8,4 +15,15 @@ i.fa-window-close:hover {
 
 .card {
     margin-bottom: 32px !important;
+}
+
+.card-header {
+    font-weight: bold !important;
+}
+
+.jumbotron {
+    background-color: rgba(36, 113, 255, 0.6) !important;
+    color: rgb(255, 255, 255) !important;
+    font-family: 'Crimson Text', 'Times New Roman', Times, serif !important;
+    font-weight: bold !important;
 }

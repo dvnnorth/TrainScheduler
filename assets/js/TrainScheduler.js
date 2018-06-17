@@ -15,7 +15,7 @@ function TrainScheduler(firebaseObj) {
 
                 $.each(snapshot.val(), function (key, trainObj) {
 
-                    let $newRow = $(`<tr>`).attr(`id`, `train${key}`);
+                    let $newRow = $(`<tr>`).attr(`id`, `train` + key);
                     let thisTrain = new Train(trainObj);
 
                     $newRow.
@@ -23,7 +23,8 @@ function TrainScheduler(firebaseObj) {
                         append($(`<td>`).text(trainObj.destination)).
                         append($(`<td>`).text(trainObj.frequency)).
                         append($(`<td>`).attr(`class`, `nextArrival`).text(thisTrain.nextArrival().format(`hh:mm A`))).
-                        append($(`<td>`).attr(`class`, `minutesAway`).text(Math.ceil(((Number.parseInt(thisTrain.nextArrival().format(`X`)) - Number.parseInt(moment().format(`X`))) / 60)).toString()));
+                        append($(`<td>`).attr(`class`, `minutesAway`).text(Math.ceil(((Number.parseInt(thisTrain.nextArrival().format(`X`)) - Number.parseInt(moment().format(`X`))) / 60)).toString())).
+                        append($(`<td>`).attr({id: `deleteTrain`, [`data-todelete`]: key}).html(`<i class="far fa-window-close"></i>`));
 
                     $trainBody.append($newRow);
 
