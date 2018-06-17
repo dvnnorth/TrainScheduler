@@ -62,22 +62,15 @@ function Train(name, destination, firstTrainTime, frequency) {
         }
     }
 
-    let _getMinutesTillNextTrain = () => {
+    let _nextArrival = () => {
+        // Get the current Unix timestamp in seconds
         let now = Number.parseInt(moment().format(`X`));
+        // Get the first train arrival as Unix timestamp in seconds
         let firstTrain = Number.parseInt(_firstTrainTime.format(`X`));
-        let secondsUntilNextTrain = (_frequency * 60) - (now - firstTrain) % (_frequency * 60);
-        console.log(`time from the first train until now in seconds: ${now - firstTrain}`);
-        console.log(`time until next train in seconds: ${secondsUntilNextTrain}`)
-        console.log(`in minutes: ${secondsUntilNextTrain / 60}`);
-        console.log(`calculated time of next train: ${moment( (now + secondsUntilNextTrain).toString(), `X`).format(`MM/DD/YYYY hh:mm A`)}`);
-        console.log(`Two hours from now is ${moment((now + 7200).toString(), `X`).format(`MM/DD/YYYY hh:mm A`)}`);
-        console.log(`To check, given the starting time, ${moment(_firstTrainTime.format(`X`), `X`).format(`MM/DD/YYYY hh:mm A`)}, here's the train times from the first train to two hours from now:`);
-        let counter = 0;
-        for (let i = Number.parseInt(_firstTrainTime.format(`X`)); i < (now + 7200); i+=(_frequency * 60)) {
-            console.log(`${counter}th train: ${moment(i.toString(), `X`).format(`MM/DD/YYYY hh:mm A`)}`);
-            counter++;
-        }
-        return ((now - firstTrain) % (_frequency * 60)) / 60;
+        // The difference between the frequency interval in seconds and the remainder of the time difference divided by the frequency interval in seconds is 
+        // the amount of time until the next train in seconds.
+        let secondsTillNextTrain = (_frequency * 60) - (now - firstTrain) % (_frequency * 60);
+        return moment((now + secondsTillNextTrain).toString(), `X`);
     }
 
     // Initialize properties based on arguments (type checking, argument validation in methods)
@@ -101,7 +94,8 @@ function Train(name, destination, firstTrainTime, frequency) {
             firstTrainTime: _firstTrainTime,
             frequency: _frequency
         }),
-        getMinutesTillNextTrain: () => _getMinutesTillNextTrain(),
+        // nextArrival() returns a moment object of the time of the next train arrival
+        nextArrival: _nextArrival,
 
         // Set methods (return instances of private setter methods)
         setName: _setName,

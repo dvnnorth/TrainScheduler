@@ -33,7 +33,7 @@ $(() => {
 
     console.log(train.setFrequency(50));
 
-    console.log(train.getMinutesTillNextTrain());
+    console.log(train.nextArrival().format(`MM/DD/YYYY hh:mm A`));
 
     $(`body`).prepend(scheduler.getHTML);
 
